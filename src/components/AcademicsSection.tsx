@@ -119,8 +119,8 @@ export const AcademicsSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex justify-center gap-2 sm:gap-3 flex-wrap mb-10">
+        {/* Tab Navigation - mobile swipeable pills */}
+        <div className="flex overflow-x-auto no-scrollbar gap-2 sm:gap-3 mb-8 sm:mb-10 pb-2 justify-start sm:justify-center">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -128,13 +128,13 @@ export const AcademicsSection: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 sm:px-6 py-3 rounded-full text-xs sm:text-sm font-black transition ${
+                className={`flex items-center gap-2 px-3.5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-black transition shrink-0 ${
                   isActive
-                    ? 'bg-[#0b1f44] text-white shadow-lg scale-105'
+                    ? 'bg-[#0b1f44] text-white shadow-lg sm:scale-105'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-amber-400' : 'text-slate-500'}`} />
+                <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isActive ? 'text-amber-400' : 'text-slate-500'}`} />
                 <span>{tab.label}</span>
               </button>
             );

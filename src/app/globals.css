@@ -12,6 +12,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
   
   body {
@@ -19,12 +20,14 @@
     background-color: #f8fafc;
     color: #0f172a;
     overflow-x: hidden;
+    width: 100%;
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: #f1f5f9;
@@ -50,26 +53,37 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Ticker Animation */
 @keyframes tickerAnimation {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .animate-ticker {
-  display: inline-block;
+  display: inline-flex;
   white-space: nowrap;
-  animation: tickerAnimation 35s linear infinite;
+  animation: tickerAnimation 28s linear infinite;
+  will-change: transform;
 }
 
-.animate-ticker:hover {
+.animate-ticker:hover, .animate-ticker:active {
   animation-play-state: paused;
 }
 
 @keyframes pulseGlow {
-  0%, 100% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.05); opacity: 1; }
+  0%, 100% { transform: scale(1); opacity: 0.95; }
+  50% { transform: scale(1.08); opacity: 1; }
 }
 
 .animate-pulse-glow {
   animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+/* Hide scrollbar for clean horizontal tab scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

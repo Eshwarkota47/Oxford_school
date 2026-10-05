@@ -78,65 +78,65 @@ export const NoticeBoard: React.FC = () => {
   };
 
   return (
-    <section className="py-16 bg-white border-b border-slate-100">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <section id="notice" className="py-12 sm:py-16 bg-white border-b border-slate-100">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           {/* Main Notices Column */}
-          <div className="lg:col-span-8 bg-slate-50 rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-slate-200">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
-                  <Bell className="w-5 h-5" />
+          <div className="lg:col-span-8 bg-slate-50 rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-slate-200/80 shadow-sm">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-5 pb-4 border-b border-slate-200">
+              <div className="flex items-center gap-2.5 sm:gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                  <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-[#0b1f44]">
-                    {t('School Notice Board & Circulars', 'ಶಾಲಾ ಸೂಚನಾ ಫಲಕ ಮತ್ತು ಸುತ್ತೋಲೆಗಳು')}
+                  <h3 className="text-lg sm:text-xl font-black text-[#0b1f44]">
+                    {t('Notice Board & Circulars', 'ಶಾಲಾ ಸೂಚನಾ ಫಲಕ ಮತ್ತು ಸುತ್ತೋಲೆಗಳು')}
                   </h3>
-                  <span className="text-xs text-slate-500 font-semibold">
-                    {t('Official Updates from Oxford Bukkapatna Desk', 'ಬುಕ್ಕಾಪಟ್ಟಣ ಶಾಲಾ ಆಡಳಿತ ಮಂಡಳಿಯ ಅಧಿಕೃತ ಪ್ರಕಟಣೆಗಳು')}
+                  <span className="text-[11px] sm:text-xs text-slate-500 font-semibold block">
+                    {t('Official Updates from Oxford Bukkapatna Desk', 'ಬುಕ್ಕಾಪಟ್ಟಣ ಶಾಲಾ ಅಧಿಕೃತ ಪ್ರಕಟಣೆಗಳು')}
                   </span>
                 </div>
               </div>
 
-              {/* Filter Chips */}
-              <div className="flex items-center gap-1.5 flex-wrap">
+              {/* Filter Chips - mobile horizontal scroll */}
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto pb-1 sm:pb-0">
                 {(['all', 'admission', 'exam', 'events'] as const).map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setFilter(cat)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition capitalize ${
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition capitalize shrink-0 ${
                       filter === cat
                         ? 'bg-[#0b1f44] text-white shadow'
-                        : 'bg-white text-slate-600 hover:bg-slate-200'
+                        : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-200 sm:border-0'
                     }`}
                   >
-                    {cat}
+                    {cat === 'all' ? t('All', 'ಎಲ್ಲಾ') : cat}
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Notice List */}
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {filteredNotices.map((item, idx) => (
                 <div
                   key={idx}
-                  className="bg-white p-5 rounded-2xl border border-slate-200/80 hover:border-blue-300 hover:shadow-md transition flex items-start gap-4"
+                  className="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 hover:border-blue-300 hover:shadow-md transition flex items-start gap-3 sm:gap-4"
                 >
-                  <div className="bg-blue-50 text-blue-900 border border-blue-100 rounded-xl p-3 text-center min-w-[64px] shrink-0">
-                    <div className="text-2xl font-black leading-none">{item.day}</div>
-                    <div className="text-[10px] font-extrabold tracking-wider">{item.month}</div>
+                  <div className="bg-blue-50 text-blue-900 border border-blue-100 rounded-xl p-2 sm:p-3 text-center min-w-[50px] sm:min-w-[64px] shrink-0">
+                    <div className="text-xl sm:text-2xl font-black leading-none">{item.day}</div>
+                    <div className="text-[9px] sm:text-[10px] font-extrabold tracking-wider">{item.month}</div>
                   </div>
 
-                  <div className="flex-1">
-                    <h4 className="text-base font-bold text-slate-900 mb-1">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm sm:text-base font-bold text-slate-900 mb-1 leading-snug">
                       {item.title}
                     </h4>
-                    <p className="text-xs sm:text-sm text-slate-600 mb-3 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-slate-600 mb-2 sm:mb-3 leading-relaxed">
                       {item.desc}
                     </p>
-                    <div className="flex items-center gap-3 text-[11px] font-semibold text-slate-500">
-                      <span className="capitalize bg-slate-100 px-2.5 py-0.5 rounded-md">
+                    <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-[11px] font-semibold text-slate-500 flex-wrap">
+                      <span className="capitalize bg-slate-100 px-2 py-0.5 rounded-md">
                         📁 {item.category}
                       </span>
                       <span>•</span>
