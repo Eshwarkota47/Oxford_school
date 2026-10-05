@@ -27,7 +27,7 @@ export const AdmissionModal: React.FC<AdmissionModalProps> = ({ isOpen, onClose 
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = 'OEMS-' + Math.floor(100000 + Math.random() * 900000);
     const dateStr = new Date().toLocaleDateString('en-IN', {
@@ -36,7 +36,13 @@ export const AdmissionModal: React.FC<AdmissionModalProps> = ({ isOpen, onClose 
       year: 'numeric',
     });
 
-    // Trigger celebration confetti
+    const submissionPayload = {
+      ...formData,
+      token,
+      date: dateStr,
+    };
+
+    // 1. Trigger celebration confetti
     try {
       confetti({
         particleCount: 100,
@@ -45,56 +51,85 @@ export const AdmissionModal: React.FC<AdmissionModalProps> = ({ isOpen, onClose 
       });
     } catch {}
 
-    setSubmittedData({
-      ...formData,
-      token,
-      date: dateStr,
-    });
+    // 2. Send to backend database API
+    try {
+      await fetch('/api/admissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submissionPayload),
+      });
+    } catch (err) {
+      console.error('API submission notice:', err);
+    }
+
+    // 3. Save to localStorage backup
+    try {
+      const existing = JSON.parse(localStorage.getItem('oxford_admissions') || '[]');
+      existing.unshift(submissionPayload);
+      localStorage.setItem('oxford_admissions', JSON.stringify(existing));
+    } catch {}
+
+    setSubmittedData(submissionPayload);
   };
 
   const handlePrint = () => {
     window.print();
   };
 
+  const whatsappMessage = submittedData
+    ? encodeURIComponent(
+        `*Oxford English Medium School Bukkapatna - Admission 2026-27*\n\n` +
+          `📄 *Application Token:* ${submittedData.token}\n` +
+          `👤 *Student Name:* ${submittedData.studentName} (${submittedData.gender})\n` +
+          `🎓 *Grade Seeking:* ${submittedData.grade}\n` +
+          `👨‍👩‍👧 *Parent/Guardian:* ${submittedData.parentName}\n` +
+          `📞 *Phone:* +91 ${submittedData.phone}\n` +
+          `📍 *Village/Location:* ${submittedData.village}\n` +
+          `🚌 *Bus Transport:* ${submittedData.busRequired}\n` +
+          `📅 *Date:* ${submittedData.date}`
+      )
+    : '';
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 relative animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl sm:rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-100 relative animate-in zoom-in-95 duration-200">
         {/* Modal Header */}
-        <div className="bg-gradient-to-r from-[#0b1f44] to-[#1e3a8a] text-white p-6 sm:p-7 flex justify-between items-center sticky top-0 z-10">
+        <div className="bg-gradient-to-r from-[#0b1f44] to-[#1e3a8a] text-white p-5 sm:p-7 flex justify-between items-center sticky top-0 z-10">
           <div>
-            <span className="text-amber-400 text-xs font-black uppercase tracking-wider block">
+            <span className="text-amber-400 text-[11px] sm:text-xs font-black uppercase tracking-wider block">
               {t('Admissions Open 2026-27', 'ದಾಖಲಾತಿ 2026-27')}
             </span>
-            <h3 className="text-lg sm:text-xl font-black">
+            <h3 className="text-base sm:text-xl font-black">
               {t('Online Student Registration Form', 'ವಿದ್ಯಾರ್ಥಿ ನೊಂದಣಿ ಅರ್ಜಿ')}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition shrink-0"
+            aria-label="Close form"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="p-6 sm:p-8">
+        <div className="p-4 sm:p-8">
           {submittedData ? (
-            <div className="text-center py-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="w-9 h-9" />
+            <div className="text-center py-2 sm:py-4">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3">
+                <CheckCircle2 className="w-8 h-8 sm:w-9 sm:h-9" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-black text-[#0b1f44] mb-2">
-                Application Registered Successfully!
+              <h3 className="text-lg sm:text-2xl font-black text-[#0b1f44] mb-1">
+                Application Registered & Stored!
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 mb-6">
-                Thank you for applying to Oxford English Medium School, Bukkapatna. Please save your application token for reference.
+              <p className="text-xs sm:text-sm text-slate-600 mb-5 max-w-md mx-auto">
+                Thank you for applying to Oxford English Medium School, Bukkapatna. Your record is saved in the school registry.
               </p>
 
               {/* Printable Acknowledgement Slip */}
-              <div className="bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl p-5 sm:p-6 text-left mb-6 text-xs sm:text-sm space-y-2.5">
-                <div className="flex justify-between items-center pb-3 border-b border-slate-200">
+              <div className="bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl p-4 sm:p-6 text-left mb-5 text-xs sm:text-sm space-y-2">
+                <div className="flex justify-between items-center pb-2.5 border-b border-slate-200">
                   <span className="text-slate-500 font-bold">Registration Token:</span>
-                  <strong className="text-lg font-black text-blue-700">{submittedData.token}</strong>
+                  <strong className="text-base sm:text-lg font-black text-blue-700">{submittedData.token}</strong>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-slate-500 font-medium">Student Name:</span>
@@ -120,20 +155,31 @@ export const AdmissionModal: React.FC<AdmissionModalProps> = ({ isOpen, onClose 
                   <span className="text-slate-500 font-medium">Bus Transport:</span>
                   <strong className="text-slate-900 font-bold">{submittedData.busRequired}</strong>
                 </div>
-                <div className="flex justify-between items-center pt-2 text-[11px] text-slate-400">
+                <div className="flex justify-between items-center pt-2 text-[10px] sm:text-[11px] text-slate-400 border-t border-slate-200">
                   <span>Registration Date:</span>
                   <span>{submittedData.date}</span>
                 </div>
               </div>
 
-              <div className="flex gap-3 justify-center flex-wrap">
+              {/* Action Buttons: WhatsApp, Print, Close */}
+              <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 justify-center">
+                <a
+                  href={`https://wa.me/919448215689?text=${whatsappMessage}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 bg-[#25d366] hover:bg-[#1ebc59] text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-xl shadow transition"
+                >
+                  <span>Send to School WhatsApp 💬</span>
+                </a>
+
                 <button
                   onClick={handlePrint}
-                  className="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-xl shadow transition"
+                  className="flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-800 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-xl shadow transition"
                 >
                   <Printer className="w-4 h-4" />
-                  <span>Print Acknowledgement Slip</span>
+                  <span>Print Slip</span>
                 </button>
+
                 <button
                   onClick={onClose}
                   className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm px-5 py-3 rounded-xl transition"

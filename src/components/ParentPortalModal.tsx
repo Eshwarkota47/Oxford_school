@@ -132,6 +132,15 @@ export const ParentPortalModal: React.FC<ParentPortalModalProps> = ({ isOpen, on
               >
                 <span>Login to Parent Portal 🔐</span>
               </button>
+
+              <div className="pt-4 mt-4 border-t border-slate-100 text-center">
+                <a
+                  href="/admin"
+                  className="text-xs text-blue-700 hover:text-blue-900 font-extrabold underline underline-offset-2 inline-flex items-center gap-1"
+                >
+                  <span>School Staff & Principal Portal $\rightarrow$</span>
+                </a>
+              </div>
             </form>
           )}
         </div>

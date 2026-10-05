@@ -121,6 +121,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmission }) => {
                   Fee Structure Tool
                 </a>
               </li>
+              <li>
+                <Link href="/admin" className="text-amber-300 hover:text-white font-bold transition flex items-center gap-1">
+                  <span>Staff / Principal Portal 🔐</span>
+                </Link>
+              </li>
             </ul>
           </div>
 
